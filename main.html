@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Book Store</title>
+    <style>
+        h1 {
+    text-align: center;
+}
+
+#filters {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+#filters input,
+#filters select {
+    margin: 0 5px;
+}
+
+#bookList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.book {
+    width: 300px;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.book img {
+    width: 100%;
+}
+
+.book h2 {
+    margin: 5px 0;
+}
+
+.book p {
+    font-style: italic;
+}
+
+#cart {
+    margin-top: 30px;
+    text-align: center;
+}
+
+#cartItems {
+    list-style-type: none;
+    padding: 0;
+}
+
+#clearCartBtn {
+    margin-top: 10px;
+}
+    </style>
+
+</head>
+
+<body>
+    <h1>Book Store</h1>
+
+    <div id="filters">
+        <input type="text" id="searchInput" placeholder="Search by your preference">
+        <select id="sortSelect">
+            <option value="title">Sort by Title</option>
+            <option value="author">Sort by Author</option>
+        </select>
+    </div>
+
+    <div id="bookList">
+        <!-- Book items will be dynamically added here -->
+    </div>
+
+    <div id="cart">
+        <h2>Shopping Cart</h2>
+        <ul id="cartItems">
+            <!-- Cart items will be dynamically added here -->
+        </ul>
+        <button id="clearCartBtn">Clear Cart</button>
+    </div>
+
+    <script >
+            const books = [{
+    id: 1,
+    title: "An Introduction to C",
+    author: "Reema Thareja",
+    description: "This book contain the complete language",
+    publish:"oxford"
+},
+{
+    id: 2,
+    title: "Python using Data structures",
+    author: "Bala GuruSwamy",
+    description: "Data structure using python is implemented"
+},
+{
+    id: 3,
+    title: "English",
+    author: "Charlies",
+    description: "complete English learning book"
+},
+{
+    id: 3,
+    title: "java",
+    author: "Remma thareja",
+    description: "complete java learning book"
+}
+
+];
+const bookList = document.getElementById("bookList");
+const searchInput = document.getElementById("searchInput");
+const sortSelect = document.getElementById("sortSelect");
+const cartItems = document.getElementById("cartItems");
+const clearCartBtn = document.getElementById("clearCartBtn");
+
+let cart = [];
+
+// Display all books initially
+displayBooks(books);
+
+// Event listeners for search, sort, and cart
+searchInput.addEventListener("input", handleSearch);
+sortSelect.addEventListener("change", handleSort);
+bookList.addEventListener("click", addToCart);
+clearCartBtn.addEventListener("click", clearCart);
+
+function displayBooks(booksArray) {
+    // Clear the book list
+    bookList.innerHTML = "";
+
+    booksArray.forEach(book => {
+        const bookItem = document.createElement("div");
+        bookItem.classList.add("book");
+
+        const title = document.createElement("h2");
+        title.textContent = book.title;
+        bookItem.appendChild(title);
+
+        const author = document.createElement("p");
+        author.textContent = "By " + book.author;
+        bookItem.appendChild(author);
+
+        const description = document.createElement("p");
+        description.textContent = book.description;
+        bookItem.appendChild(description);
+
+       
+
+       
+
+        const addToCartBtn = document.createElement("button");
+        addToCartBtn.textContent = "Add to Cart";
+        addToCartBtn.dataset.id = book.id;
+        bookItem.appendChild(addToCartBtn);
+
+        bookList.appendChild(bookItem);
+    });
+}
+
+function handleSearch() {
+    const searchText = searchInput.value.toLowerCase();
+
+    const filteredBooks = books.filter(book => {
+        const title = book.title.toLowerCase();
+        const author = book.author.toLowerCase();
+        return title.includes(searchText) || author.includes(searchText);
+    });
+
+    displayBooks(filteredBooks);
+}
+
+function handleSort() {
+    const sortKey = sortSelect.value;
+
+    const sortedBooks = books.sort((a, b) => {
+        const itemA = a[sortKey].toLowerCase();
+        const itemB = b[sortKey].toLowerCase();
+
+        if (itemA < itemB) {
+            return -1;
+        }
+        if (itemA > itemB) {
+            return 1;
+        }
+        return 0;
+    });
+
+    displayBooks(sortedBooks);
+}
+
+function addToCart(event) {
+    if (event.target.tagName === "BUTTON") {
+        const bookId = parseInt(event.target.dataset.id);
+        const selectedBook = books.find(book => book.id === bookId);
+
+        if (selectedBook) {
+            cart.push(selectedBook);
+            updateCartUI();
+        }
+    }
+}
+
+function updateCartUI() {
+    cartItems.innerHTML = "";
+
+    cart.forEach(book => {
+        const cartItem = document.createElement("li");
+        cartItem.textContent = book.title;
+        cartItems.appendChild(cartItem);
+    });
+}
+
+function clearCart() {
+    cart = [];
+    updateCartUI();
+}
+
+    </script>
+</body>
+
+</html>
